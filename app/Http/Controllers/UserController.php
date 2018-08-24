@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Phone;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -17,6 +18,13 @@ class UserController extends Controller
     {
         $users= User::all();
         return view('user.index', compact('users'));
+    }
+    
+    public function index_json()
+    {
+        $users = DB::select('select users.* , p.number, p.organization from users join phones as p on p.user_id = users.id');
+
+        return response()->json($users);
     }
 
     /**

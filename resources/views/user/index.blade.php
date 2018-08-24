@@ -3,34 +3,24 @@
 @section ('content')
     <div class="page-header">
         <h1>
-            List onwers
+            Phonebook
         </h1>
     </div>
     <div class="row">
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-		<th>Name</th>
-		<th>Phone number</th>
-                <th>Organization</th>
-		<th>Edit</th>
-                <th>Delete</th>
-            </tr>
-            </thead>
-            <tbody>
-		@foreach ($users as $user)
-                <tr>
-		    <td> {{$user->name}} </td>	
-                    <td> {{$user->phone->organization}} </td>
-                    <td> {{$user->phone->number}} </td>
-                    <td> <a onClick = 'getRecord({{ $user->id }})'>Edit</a> </td>
-                    <td> <a href = 'user/delete/{{ $user->id }}'>Delete</a> </td>
-                </tr>
-		@endforeach
-            </tbody>
-        </table>
-    </div>
+    <table id="table_record" class="table table-striped table-bordered" style="width:100%">
+      <thead>
+        <tr>
+          <th style="width: 50%">Name</th>
+          <th style="width: 50%">Phone number</th>
+          <th style="width: 30%">Organization</th>
+          <th style="width: 20%">Edit</th>
+          <th style="width: 20%">Delete</th>
+        </tr>
+      </thead>
+    </table>
+
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createModal">New record</button>
+
     <!-- Modal for create record -->
     <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
        <div class="modal-dialog" role="document">
@@ -59,6 +49,7 @@
          </div>
       </div>
     </div>
+
     <!-- Modal for update record -->
     <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" >
        <div class="modal-dialog" role="document">
@@ -87,23 +78,51 @@
          </div>
       </div>
    </div>
+
+<style>
+#table_record_info{display: none;}
+</style>
    <script>
-      function getRecord(i) {
-        $.ajax({
-          type: 'get',
-          url: '/user/'+ i,
-          success: function(data) {
-             $('#fir').attr('action', 'user/edit/'+data.id);
-             $('#updateModal').modal();
-             console.log(data);
-             $('#name_up').val(data.name);
-             $('#number_up').val(data.phone.number);
-             $('#name_org_up').val(data.phone.organization);
-          },
-          error:  function(xhr, str){
-            alert('Ошибка');
-          }
-        });
-      }
+     $('#table_record').DataTable( {
+       ajax: {url: "/get_user","dataSrc":""},
+       "paging": false,
+       columns: [
+         { data: "name" },
+         { data: "number" },
+         { data: "organization"},
+         {
+           "mData": null,
+           "bSortable": false,
+           "mRender": function (data, type, full) {
+             return '<a onClick = "getRecord('+data.id+')">Edit</a> ';
+           }
+         },
+         {
+           "mData": null,
+           "bSortable": false,
+           "mRender": function (data, type, full) {
+             return '<a href = "user/delete/'+ data.id+'">Delete</a>';
+           }
+         },
+       ],
+       select: true,
+     });
+
+     function getRecord(i) {
+       $.ajax({
+         type: 'get',
+         url: '/user/'+ i,
+         success: function(data) {
+           $('#fir').attr('action', 'user/edit/'+data.id);
+           $('#updateModal').modal();
+           $('#name_up').val(data.name);
+           $('#number_up').val(data.phone.number);
+           $('#name_org_up').val(data.phone.organization);
+         },
+         error:  function(xhr, str){
+           alert('Ошибка');
+         }
+       });
+     }
    </script>
 @endsection
