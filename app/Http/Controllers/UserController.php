@@ -15,7 +15,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
         $users= User::all();
         return view('user.index', compact('users'));
     }
@@ -27,21 +26,9 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        //
         $user = User::create(['name' => $request['name_user']]);
         $phone = Phone::create(['number' => $request['number'], 'organization' => $request['name_organization'], 'user_id' => $user->id]);
         return redirect()->action('UserController@index');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -67,24 +54,12 @@ class UserController extends Controller
     public function edit(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $user->update($request->all());
+        $user->update(['name' => $request['name_user']]);
  
         $phone = Phone::where('user_id', $id);
-        $phone->update($request->all());
+        $phone->update(['number' => $request['number'], 'organization' => $request['name_organization']]);
   
         return redirect()->action('UserController@index');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**

@@ -11,13 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'UserController@index');
 Route::get('phone_books', 'PhoneController@index');
-Route::get('user', 'UserController@index');
-
 Route::post('user/create', 'UserController@create');
-
 Route::get('user/delete/{id}', 'UserController@destroy');
 Route::get('user/{id}', 'UserController@show');
+Route::post('user/edit/{id}', 'UserController@edit');
